@@ -1,10 +1,11 @@
 {
     "name": "MakeRobot",
-    "description": "",
+    "description": "MakeCode micro:bit extension for MakeRobot tracer activities with junior, senior, and expert blocks.",
     "dependencies": {
         "core": "*",
         "radio": "*",
-        "microphone": "*"
+        "microphone": "*",
+        "motionbit": "github:CytronTechnologies/pxt-motionbit"
     },
     "files": [
         "main.blocks",
