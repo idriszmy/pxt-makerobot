@@ -108,7 +108,7 @@ namespace MakeRobot {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         }
 
-        lineFollowWithPin(AnalogReadWritePin.P0, 150, false, 1000)
+        lineFollowWithPin(AnalogReadWritePin.P0, 150, false, 500)
     }
 
     /**
