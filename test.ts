@@ -3,8 +3,9 @@
 
 if (false) {
     MakeRobot.juniorRobotCalibration()
-    MakeRobot.robotMove(MakeRobotMove.Stop)
+    MakeRobot.robotLineFollowUntilCross()
     MakeRobot.robotMove(MakeRobotMove.Forward)
+    MakeRobot.robotMove(MakeRobotMove.Left)
 
     MakeRobot.robotCalibration(MakeRobotCalibrationPin.P9, 120)
     MakeRobot.setMotor(MotionBitMotorChannel.M1, MotionBitMotorChannel.M3)

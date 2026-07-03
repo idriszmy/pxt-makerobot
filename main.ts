@@ -2,14 +2,12 @@
  * MakeRobot
  */
 enum MakeRobotMove {
-    //% block="stop"
-    Stop,
     //% block="forward"
     Forward,
-    //% block="right"
-    Right,
     //% block="left"
     Left,
+    //% block="right"
+    Right,
     //% block="u-turn"
     UTurn
 }
@@ -86,20 +84,28 @@ namespace MakeRobot {
     }
 
     /**
+     * Follow the line until the robot reaches a cross.
+     */
+    //% block="robot line follow until cross"
+    //% group="Tracer Junior"
+    //% weight=90
+    export function robotLineFollowUntilCross(): void {
+        setPidTuning(500, 0.6, 0.4, 0)
+        lineFollowWithPin(AnalogReadWritePin.P0, 150, true, 500)
+    }
+
+    /**
      * Follow the line to a cross, then move forward, right, left, or u-turn.
      */
     //% block="robot move %move"
     //% move.defl=MakeRobotMove.Forward
     //% group="Tracer Junior"
-    //% weight=90
+    //% weight=80
     export function robotMove(move: MakeRobotMove): void {
         setPidTuning(500, 0.6, 0.4, 0)
         lineFollowWithPin(AnalogReadWritePin.P0, 150, true, 500)
 
-        if (move == MakeRobotMove.Stop) {
-            robotStop()
-            return
-        } else if (move == MakeRobotMove.Right) {
+        if (move == MakeRobotMove.Right) {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         } else if (move == MakeRobotMove.Left) {
             turnToLineWithPin(MakeRobotTurnDirection.Left, 150, AnalogReadWritePin.P0)
@@ -107,8 +113,6 @@ namespace MakeRobot {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         }
-
-        lineFollowWithPin(AnalogReadWritePin.P0, 150, false, 500)
     }
 
     /**
@@ -119,6 +123,7 @@ namespace MakeRobot {
     //% speed.min=0 speed.max=255 speed.defl=120
     //% group="Tracer Senior"
     //% weight=100
+    //% blockHidden=true
     export function robotCalibration(pin: MakeRobotCalibrationPin, speed: number): void {
         const motorSpeed = limit(speed, 0, 255)
         const calibrationPin = calibrationPinValue(pin)
@@ -145,6 +150,7 @@ namespace MakeRobot {
     //% right.defl=MotionBitMotorChannel.M3
     //% group="Tracer Senior"
     //% weight=90
+    //% blockHidden=true
     export function setMotor(left: MotionBitMotorChannel, right: MotionBitMotorChannel): void {
         leftMotorChannel = left
         rightMotorChannel = right
@@ -160,6 +166,7 @@ namespace MakeRobot {
     //% inlineInputMode=inline
     //% group="Tracer Senior"
     //% weight=80
+    //% blockHidden=true
     export function setMotorsSpeed(leftSpeed: number, rightSpeed: number, delay: number): void {
         runMotorSigned(leftMotorChannel, leftSpeed)
         runMotorSigned(rightMotorChannel, rightSpeed)
@@ -177,6 +184,7 @@ namespace MakeRobot {
     //% position.defl=MakeRobotLinePosition.Center
     //% group="Tracer Senior"
     //% weight=70
+    //% blockHidden=true
     export function lineDetectedOn(position: MakeRobotLinePosition): boolean {
         const analogValue = pins.analogReadPin(AnalogReadWritePin.P0)
 
@@ -208,6 +216,7 @@ namespace MakeRobot {
     //% inlineInputMode=inline
     //% group="Tracer Expert"
     //% weight=100
+    //% blockHidden=true
     export function setPidTuning(setpoint: number, kp: number, kd: number, ki: number): void {
         pidSetpoint = limit(setpoint, 0, 1023)
         pidKp = kp
@@ -228,6 +237,7 @@ namespace MakeRobot {
     //% inlineInputMode=inline
     //% group="Tracer Expert"
     //% weight=90
+    //% blockHidden=true
     export function robotLineFollow(pin: MakeRobotLinePin, speed: number, cross: boolean, stopTimer: number): void {
         lineFollowWithPin(linePinValue(pin), speed, cross, stopTimer)
     }
@@ -242,6 +252,7 @@ namespace MakeRobot {
     //% inlineInputMode=inline
     //% group="Tracer Expert"
     //% weight=80
+    //% blockHidden=true
     export function robotTurnToLine(direction: MakeRobotTurnDirection, speed: number, pin: MakeRobotLinePin): void {
         turnToLineWithPin(direction, speed, linePinValue(pin))
     }
@@ -252,6 +263,7 @@ namespace MakeRobot {
     //% block="robot stop"
     //% group="Tracer Expert"
     //% weight=70
+    //% blockHidden=true
     export function robotStop(): void {
         motionbit.brakeMotor(leftMotorChannel)
         motionbit.brakeMotor(rightMotorChannel)
