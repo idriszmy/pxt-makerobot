@@ -2,8 +2,6 @@
  * MakeRobot
  */
 enum MakeRobotMove {
-    //% block="forward"
-    Forward,
     //% block="left"
     Left,
     //% block="right"
@@ -95,16 +93,13 @@ namespace MakeRobot {
     }
 
     /**
-     * Follow the line to a cross, then move forward, right, left, or u-turn.
+     * Move left, right, or u-turn from the current line position.
      */
     //% block="robot move %move"
-    //% move.defl=MakeRobotMove.Forward
+    //% move.defl=MakeRobotMove.Left
     //% group="Tracer Junior"
     //% weight=80
     export function robotMove(move: MakeRobotMove): void {
-        setPidTuning(500, 0.6, 0.4, 0)
-        lineFollowWithPin(AnalogReadWritePin.P0, 150, true, 500)
-
         if (move == MakeRobotMove.Right) {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         } else if (move == MakeRobotMove.Left) {

@@ -4,7 +4,6 @@
 if (false) {
     MakeRobot.juniorRobotCalibration()
     MakeRobot.robotLineFollowUntilCross()
-    MakeRobot.robotMove(MakeRobotMove.Forward)
     MakeRobot.robotMove(MakeRobotMove.Left)
 
     MakeRobot.robotCalibration(MakeRobotCalibrationPin.P9, 120)
