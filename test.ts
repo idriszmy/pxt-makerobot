@@ -10,7 +10,8 @@ if (false) {
     MakeRobot.robotCalibration(MakeRobotCalibrationPin.P9, 120)
     MakeRobot.setMotor(MotionBitMotorChannel.M1, MotionBitMotorChannel.M3)
     MakeRobot.setMotorsSpeed(120, 120, 100)
-    MakeRobot.lineDetectedOn(MakeRobotLinePosition.Center)
+    MakeRobot.setMakerLine(MakeRobotMakerLinePin.P16, MakeRobotMakerLinePin.P15, MakeRobotMakerLinePin.P14, MakeRobotMakerLinePin.P13, MakeRobotMakerLinePin.P12)
+    MakeRobot.lineDetectedOn(MakeRobotLineSignal.Off, MakeRobotLineSignal.Off, MakeRobotLineSignal.On, MakeRobotLineSignal.Off, MakeRobotLineSignal.Any)
     MakeRobot.readUltrasonic()
 
     MakeRobot.setPidTuning(500, 0.6, 0.4, 0)

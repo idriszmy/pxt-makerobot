@@ -41,28 +41,33 @@ enum MakeRobotCalibrationPin {
     P16
 }
 
+enum MakeRobotMakerLinePin {
+    //% block="P12"
+    P12,
+    //% block="P13"
+    P13,
+    //% block="P14"
+    P14,
+    //% block="P15"
+    P15,
+    //% block="P16"
+    P16
+}
+
+enum MakeRobotLineSignal {
+    //% block="off"
+    Off,
+    //% block="on"
+    On,
+    //% block="any"
+    Any
+}
+
 enum MakeRobotTurnDirection {
     //% block="left"
     Left,
     //% block="right"
     Right
-}
-
-enum MakeRobotLinePosition {
-    //% block="center"
-    Center,
-    //% block="left"
-    Left,
-    //% block="right"
-    Right,
-    //% block="far left"
-    FarLeft,
-    //% block="far right"
-    FarRight,
-    //% block="all"
-    All,
-    //% block="none"
-    None
 }
 
 //% color=#3455db icon="\uf1b9"
@@ -77,6 +82,11 @@ namespace MakeRobot {
     let pidKi = 0
     let leftMotorChannel = MotionBitMotorChannel.M1
     let rightMotorChannel = MotionBitMotorChannel.M3
+    let makerLineD1 = DigitalPin.P16
+    let makerLineD2 = DigitalPin.P15
+    let makerLineD3 = DigitalPin.P14
+    let makerLineD4 = DigitalPin.P13
+    let makerLineD5 = DigitalPin.P12
     let ultrasonicDistance = 255
     let ultrasonicEnabled = false
     let ultrasonicDivisor = control.hardwareVersion() == "1" ? 39 : 58
@@ -158,7 +168,6 @@ namespace MakeRobot {
     //% speed.min=0 speed.max=255 speed.defl=120
     //% group="Tracer Senior"
     //% weight=100
-    //% blockHidden=true
     export function robotCalibration(pin: MakeRobotCalibrationPin, speed: number): void {
         const motorSpeed = limit(speed, 0, 255)
         const calibrationPin = calibrationPinValue(pin)
@@ -185,7 +194,6 @@ namespace MakeRobot {
     //% right.defl=MotionBitMotorChannel.M3
     //% group="Tracer Senior"
     //% weight=90
-    //% blockHidden=true
     export function setMotor(left: MotionBitMotorChannel, right: MotionBitMotorChannel): void {
         leftMotorChannel = left
         rightMotorChannel = right
@@ -201,7 +209,6 @@ namespace MakeRobot {
     //% inlineInputMode=inline
     //% group="Tracer Senior"
     //% weight=80
-    //% blockHidden=true
     export function setMotorsSpeed(leftSpeed: number, rightSpeed: number, delay: number): void {
         runMotorSigned(leftMotorChannel, leftSpeed)
         runMotorSigned(rightMotorChannel, rightSpeed)
@@ -213,31 +220,43 @@ namespace MakeRobot {
     }
 
     /**
-     * Check where the line is detected on the Maker Line sensor.
+     * Set Maker Line digital pins D1 to D5.
      */
-    //% block="line detected on %position"
-    //% position.defl=MakeRobotLinePosition.Center
+    //% block="set maker line D1 %d1 D2 %d2 D3 %d3 D4 %d4 D5 %d5"
+    //% d1.defl=MakeRobotMakerLinePin.P16
+    //% d2.defl=MakeRobotMakerLinePin.P15
+    //% d3.defl=MakeRobotMakerLinePin.P14
+    //% d4.defl=MakeRobotMakerLinePin.P13
+    //% d5.defl=MakeRobotMakerLinePin.P12
+    //% inlineInputMode=inline
+    //% group="Tracer Senior"
+    //% weight=75
+    export function setMakerLine(d1: MakeRobotMakerLinePin, d2: MakeRobotMakerLinePin, d3: MakeRobotMakerLinePin, d4: MakeRobotMakerLinePin, d5: MakeRobotMakerLinePin): void {
+        makerLineD1 = makerLinePinValue(d1)
+        makerLineD2 = makerLinePinValue(d2)
+        makerLineD3 = makerLinePinValue(d3)
+        makerLineD4 = makerLinePinValue(d4)
+        makerLineD5 = makerLinePinValue(d5)
+    }
+
+    /**
+     * Check whether Maker Line sensor signals match the selected pattern.
+     */
+    //% block="line detected on S1 %s1 S2 %s2 S3 %s3 S4 %s4 S5 %s5"
+    //% s1.defl=MakeRobotLineSignal.Off
+    //% s2.defl=MakeRobotLineSignal.Off
+    //% s3.defl=MakeRobotLineSignal.On
+    //% s4.defl=MakeRobotLineSignal.Off
+    //% s5.defl=MakeRobotLineSignal.Off
+    //% inlineInputMode=inline
     //% group="Tracer Senior"
     //% weight=70
-    //% blockHidden=true
-    export function lineDetectedOn(position: MakeRobotLinePosition): boolean {
-        const analogValue = pins.analogReadPin(AnalogReadWritePin.P0)
-
-        if (position == MakeRobotLinePosition.None) {
-            return analogValue < 81
-        } else if (position == MakeRobotLinePosition.FarLeft) {
-            return analogValue >= 81 && analogValue < 266
-        } else if (position == MakeRobotLinePosition.Left) {
-            return analogValue >= 266 && analogValue < 430
-        } else if (position == MakeRobotLinePosition.Center) {
-            return analogValue >= 430 && analogValue <= 593
-        } else if (position == MakeRobotLinePosition.Right) {
-            return analogValue > 593 && analogValue <= 757
-        } else if (position == MakeRobotLinePosition.FarRight) {
-            return analogValue > 757 && analogValue <= 941
-        } else {
-            return analogValue > 941
-        }
+    export function lineDetectedOn(s1: MakeRobotLineSignal, s2: MakeRobotLineSignal, s3: MakeRobotLineSignal, s4: MakeRobotLineSignal, s5: MakeRobotLineSignal): boolean {
+        return makerLineSignalMatches(makerLineD1, s1)
+            && makerLineSignalMatches(makerLineD2, s2)
+            && makerLineSignalMatches(makerLineD3, s3)
+            && makerLineSignalMatches(makerLineD4, s4)
+            && makerLineSignalMatches(makerLineD5, s5)
     }
 
     /**
@@ -247,7 +266,6 @@ namespace MakeRobot {
     //% block="ultrasonic distance (cm)"
     //% group="Tracer Senior"
     //% weight=60
-    //% blockHidden=true
     export function readUltrasonic(): number {
         if (!ultrasonicEnabled) {
             ultrasonicEnabled = true
@@ -501,6 +519,32 @@ namespace MakeRobot {
         } else {
             return AnalogReadWritePin.P0
         }
+    }
+
+    function makerLinePinValue(pin: MakeRobotMakerLinePin): DigitalPin {
+        if (pin == MakeRobotMakerLinePin.P13) {
+            return DigitalPin.P13
+        } else if (pin == MakeRobotMakerLinePin.P14) {
+            return DigitalPin.P14
+        } else if (pin == MakeRobotMakerLinePin.P15) {
+            return DigitalPin.P15
+        } else if (pin == MakeRobotMakerLinePin.P16) {
+            return DigitalPin.P16
+        } else {
+            return DigitalPin.P12
+        }
+    }
+
+    function makerLineDetected(pin: DigitalPin): boolean {
+        return pins.digitalReadPin(pin) == 1
+    }
+
+    function makerLineSignalMatches(pin: DigitalPin, signal: MakeRobotLineSignal): boolean {
+        if (signal == MakeRobotLineSignal.Any) {
+            return true
+        }
+
+        return makerLineDetected(pin) == (signal == MakeRobotLineSignal.On)
     }
 
     function calibrationPinValue(pin: MakeRobotCalibrationPin): DigitalPin {
