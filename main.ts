@@ -10,6 +10,13 @@ enum MakeRobotMove {
     UTurn
 }
 
+enum MakeRobotLineFollowUntil {
+    //% block="cross"
+    Cross,
+    //% block="obstacle"
+    Obstacle
+}
+
 enum MakeRobotLinePin {
     //% block="P0"
     P0,
@@ -70,6 +77,33 @@ namespace MakeRobot {
     let pidKi = 0
     let leftMotorChannel = MotionBitMotorChannel.M1
     let rightMotorChannel = MotionBitMotorChannel.M3
+    let ultrasonicDistance = 255
+    let ultrasonicEnabled = false
+    let ultrasonicDivisor = control.hardwareVersion() == "1" ? 39 : 58
+
+    control.inBackground(function () {
+        while (true) {
+            if (ultrasonicEnabled) {
+                pins.digitalWritePin(DigitalPin.P1, 0)
+                control.waitMicros(2)
+                pins.digitalWritePin(DigitalPin.P1, 1)
+                control.waitMicros(10)
+                pins.digitalWritePin(DigitalPin.P1, 0)
+
+                const pulse = pins.pulseIn(DigitalPin.P2, PulseValue.High, 255 * ultrasonicDivisor + 20000)
+
+                if (pulse == 0) {
+                    ultrasonicDistance = 255
+                } else {
+                    ultrasonicDistance = Math.idiv(pulse, ultrasonicDivisor)
+                }
+
+                basic.pause(200)
+            } else {
+                basic.pause(50)
+            }
+        }
+    })
 
     /**
      * Calibrate the robot line sensor using default settings.
@@ -82,14 +116,20 @@ namespace MakeRobot {
     }
 
     /**
-     * Follow the line until the robot reaches a cross.
+     * Follow the line until the robot reaches a cross or obstacle.
      */
-    //% block="robot line follow until cross"
+    //% block="robot line follow until %until"
+    //% until.defl=MakeRobotLineFollowUntil.Cross
     //% group="Tracer Junior"
     //% weight=90
-    export function robotLineFollowUntilCross(): void {
+    export function robotLineFollowUntil(until: MakeRobotLineFollowUntil): void {
         setPidTuning(500, 0.6, 0.4, 0)
-        lineFollowWithPin(AnalogReadWritePin.P0, 150, true, 500)
+
+        if (until == MakeRobotLineFollowUntil.Obstacle) {
+            lineFollowUntilObstacleWithPin(AnalogReadWritePin.P0, 150, 10)
+        } else {
+            lineFollowWithPin(AnalogReadWritePin.P0, 150, true, 500)
+        }
     }
 
     /**
@@ -201,6 +241,23 @@ namespace MakeRobot {
     }
 
     /**
+     * Return distance measured by ultrasonic sensor in centimeters.
+     * Trig is fixed to P1 and Echo is fixed to P2.
+     */
+    //% block="ultrasonic distance (cm)"
+    //% group="Tracer Senior"
+    //% weight=60
+    //% blockHidden=true
+    export function readUltrasonic(): number {
+        if (!ultrasonicEnabled) {
+            ultrasonicEnabled = true
+            basic.pause(300)
+        }
+
+        return ultrasonicDistance
+    }
+
+    /**
      * Set the PID tuning values.
      */
     //% block="set PID tuning setpoint %setpoint kp %kp kd %kd ki %ki"
@@ -299,6 +356,51 @@ namespace MakeRobot {
             if (crossFound && input.runningTime() >= endTime) {
                 break
             }
+
+            if (adc < 81) {
+                if (lastError < 0) {
+                    speedLeft = 0
+                    speedRight = baseSpeed
+                } else {
+                    speedLeft = baseSpeed
+                    speedRight = 0
+                }
+            } else if (adc > 941) {
+                speedLeft = baseSpeed
+                speedRight = baseSpeed
+            } else {
+                const powerDiff = limit(pidPowerDiff(adc), -baseSpeed, baseSpeed)
+
+                if (powerDiff < 0) {
+                    speedLeft = baseSpeed + powerDiff
+                    speedRight = baseSpeed
+                } else {
+                    speedLeft = baseSpeed
+                    speedRight = baseSpeed - powerDiff
+                }
+            }
+
+            runLineMotors(speedLeft, speedRight)
+            basic.pause(5)
+        }
+
+        robotStop()
+    }
+
+    function lineFollowUntilObstacleWithPin(pin: AnalogReadWritePin, speed: number, obstacleDistance: number): void {
+        const baseSpeed = limit(speed, 0, 255)
+        let speedLeft = baseSpeed
+        let speedRight = baseSpeed
+
+        resetPid()
+        readUltrasonic()
+
+        while (true) {
+            if (ultrasonicDistance <= obstacleDistance) {
+                break
+            }
+
+            const adc = pins.analogReadPin(pin)
 
             if (adc < 81) {
                 if (lastError < 0) {

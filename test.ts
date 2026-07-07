@@ -3,13 +3,15 @@
 
 if (false) {
     MakeRobot.juniorRobotCalibration()
-    MakeRobot.robotLineFollowUntilCross()
+    MakeRobot.robotLineFollowUntil(MakeRobotLineFollowUntil.Cross)
+    MakeRobot.robotLineFollowUntil(MakeRobotLineFollowUntil.Obstacle)
     MakeRobot.robotMove(MakeRobotMove.Left)
 
     MakeRobot.robotCalibration(MakeRobotCalibrationPin.P9, 120)
     MakeRobot.setMotor(MotionBitMotorChannel.M1, MotionBitMotorChannel.M3)
     MakeRobot.setMotorsSpeed(120, 120, 100)
     MakeRobot.lineDetectedOn(MakeRobotLinePosition.Center)
+    MakeRobot.readUltrasonic()
 
     MakeRobot.setPidTuning(500, 0.6, 0.4, 0)
     MakeRobot.robotLineFollow(MakeRobotLinePin.P0, 150, true, 0)
