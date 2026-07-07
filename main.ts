@@ -61,6 +61,27 @@ enum MakeRobotLineSignal {
     Any
 }
 
+enum MakeRobotUltrasonicPin {
+    //% block="P0"
+    P0,
+    //% block="P1"
+    P1,
+    //% block="P2"
+    P2,
+    //% block="P9"
+    P9,
+    //% block="P12"
+    P12,
+    //% block="P13"
+    P13,
+    //% block="P14"
+    P14,
+    //% block="P15"
+    P15,
+    //% block="P16"
+    P16
+}
+
 enum MakeRobotTurnDirection {
     //% block="left"
     Left,
@@ -85,6 +106,8 @@ namespace MakeRobot {
     let makerLineD3 = DigitalPin.P14
     let makerLineD4 = DigitalPin.P13
     let makerLineD5 = DigitalPin.P12
+    let ultrasonicTrigPin = DigitalPin.P1
+    let ultrasonicEchoPin = DigitalPin.P2
     let ultrasonicDistance = 255
     let ultrasonicEnabled = false
     let ultrasonicDivisor = control.hardwareVersion() == "1" ? 39 : 58
@@ -92,13 +115,13 @@ namespace MakeRobot {
     control.inBackground(function () {
         while (true) {
             if (ultrasonicEnabled) {
-                pins.digitalWritePin(DigitalPin.P1, 0)
+                pins.digitalWritePin(ultrasonicTrigPin, 0)
                 control.waitMicros(2)
-                pins.digitalWritePin(DigitalPin.P1, 1)
+                pins.digitalWritePin(ultrasonicTrigPin, 1)
                 control.waitMicros(10)
-                pins.digitalWritePin(DigitalPin.P1, 0)
+                pins.digitalWritePin(ultrasonicTrigPin, 0)
 
-                const pulse = pins.pulseIn(DigitalPin.P2, PulseValue.High, 255 * ultrasonicDivisor + 20000)
+                const pulse = pins.pulseIn(ultrasonicEchoPin, PulseValue.High, 255 * ultrasonicDivisor + 20000)
 
                 if (pulse == 0) {
                     ultrasonicDistance = 255
@@ -255,8 +278,21 @@ namespace MakeRobot {
     }
 
     /**
+     * Set ultrasonic sensor trigger and echo pins.
+     */
+    //% block="set ultrasonic Trig %trig Echo %echo"
+    //% trig.defl=MakeRobotUltrasonicPin.P1
+    //% echo.defl=MakeRobotUltrasonicPin.P2
+    //% inlineInputMode=inline
+    //% group="Tracer Senior"
+    //% weight=65
+    export function setUltrasonic(trig: MakeRobotUltrasonicPin, echo: MakeRobotUltrasonicPin): void {
+        ultrasonicTrigPin = ultrasonicPinValue(trig)
+        ultrasonicEchoPin = ultrasonicPinValue(echo)
+    }
+
+    /**
      * Return distance measured by ultrasonic sensor in centimeters.
-     * Trig is fixed to P1 and Echo is fixed to P2.
      */
     //% block="ultrasonic distance (cm)"
     //% group="Tracer Senior"
@@ -513,6 +549,28 @@ namespace MakeRobot {
             return AnalogReadWritePin.P2
         } else {
             return AnalogReadWritePin.P0
+        }
+    }
+
+    function ultrasonicPinValue(pin: MakeRobotUltrasonicPin): DigitalPin {
+        if (pin == MakeRobotUltrasonicPin.P1) {
+            return DigitalPin.P1
+        } else if (pin == MakeRobotUltrasonicPin.P2) {
+            return DigitalPin.P2
+        } else if (pin == MakeRobotUltrasonicPin.P9) {
+            return DigitalPin.P9
+        } else if (pin == MakeRobotUltrasonicPin.P12) {
+            return DigitalPin.P12
+        } else if (pin == MakeRobotUltrasonicPin.P13) {
+            return DigitalPin.P13
+        } else if (pin == MakeRobotUltrasonicPin.P14) {
+            return DigitalPin.P14
+        } else if (pin == MakeRobotUltrasonicPin.P15) {
+            return DigitalPin.P15
+        } else if (pin == MakeRobotUltrasonicPin.P16) {
+            return DigitalPin.P16
+        } else {
+            return DigitalPin.P0
         }
     }
 
