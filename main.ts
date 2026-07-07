@@ -5,9 +5,7 @@ enum MakeRobotMove {
     //% block="left"
     Left,
     //% block="right"
-    Right,
-    //% block="u-turn"
-    UTurn
+    Right
 }
 
 enum MakeRobotLineFollowUntil {
@@ -143,20 +141,17 @@ namespace MakeRobot {
     }
 
     /**
-     * Move left, right, or u-turn from the current line position.
+     * Go left or right from the current line position.
      */
-    //% block="robot move %move"
+    //% block="robot go %move"
     //% move.defl=MakeRobotMove.Left
     //% group="Tracer Junior"
     //% weight=80
-    export function robotMove(move: MakeRobotMove): void {
+    export function robotGo(move: MakeRobotMove): void {
         if (move == MakeRobotMove.Right) {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         } else if (move == MakeRobotMove.Left) {
             turnToLineWithPin(MakeRobotTurnDirection.Left, 150, AnalogReadWritePin.P0)
-        } else if (move == MakeRobotMove.UTurn) {
-            turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
-            turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         }
     }
 
