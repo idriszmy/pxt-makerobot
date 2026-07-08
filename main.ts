@@ -115,19 +115,7 @@ namespace MakeRobot {
     control.inBackground(function () {
         while (true) {
             if (ultrasonicEnabled) {
-                pins.digitalWritePin(ultrasonicTrigPin, 0)
-                control.waitMicros(2)
-                pins.digitalWritePin(ultrasonicTrigPin, 1)
-                control.waitMicros(10)
-                pins.digitalWritePin(ultrasonicTrigPin, 0)
-
-                const pulse = pins.pulseIn(ultrasonicEchoPin, PulseValue.High, 255 * ultrasonicDivisor + 20000)
-
-                if (pulse == 0) {
-                    ultrasonicDistance = 255
-                } else {
-                    ultrasonicDistance = Math.idiv(pulse, ultrasonicDivisor)
-                }
+                readUltrasonicNow()
 
                 basic.pause(200)
             } else {
@@ -298,11 +286,8 @@ namespace MakeRobot {
     //% group="Tracer Senior"
     //% weight=60
     export function readUltrasonic(): number {
-        if (!ultrasonicEnabled) {
-            ultrasonicEnabled = true
-            basic.pause(300)
-        }
-
+        ultrasonicEnabled = true
+        readUltrasonicNow()
         return ultrasonicDistance
     }
 
@@ -540,6 +525,22 @@ namespace MakeRobot {
         pins.digitalWritePin(pin, 0)
         basic.pause(100)
         pins.digitalWritePin(pin, 1)
+    }
+
+    function readUltrasonicNow(): void {
+        pins.digitalWritePin(ultrasonicTrigPin, 0)
+        control.waitMicros(2)
+        pins.digitalWritePin(ultrasonicTrigPin, 1)
+        control.waitMicros(10)
+        pins.digitalWritePin(ultrasonicTrigPin, 0)
+
+        const pulse = pins.pulseIn(ultrasonicEchoPin, PulseValue.High, 255 * ultrasonicDivisor + 20000)
+
+        if (pulse == 0) {
+            ultrasonicDistance = 255
+        } else {
+            ultrasonicDistance = Math.idiv(pulse, ultrasonicDivisor)
+        }
     }
 
     function linePinValue(pin: MakeRobotLinePin): AnalogReadWritePin {
