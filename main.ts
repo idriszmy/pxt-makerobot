@@ -91,7 +91,8 @@ enum MakeRobotTurnDirection {
 
 //% color=#3455db icon="\uf1b9"
 //% block="MakeRobot"
-//% groups=["Tracer Junior", "Tracer Senior", "Tracer Expert"]
+//% subcategories=["Tracer Junior", "Tracer Senior", "Tracer Expert"]
+//% groups=["Setup", "Movement", "Sensors"]
 namespace MakeRobot {
     let lastError = 0
     let integral = 0
@@ -128,8 +129,9 @@ namespace MakeRobot {
      * Calibrate the robot line sensor using default settings.
      */
     //% block="robot calibration"
-    //% group="Tracer Junior"
+    //% group="Setup"
     //% weight=100
+    //% subcategory="Tracer Junior"
     export function juniorRobotCalibration(): void {
         robotCalibration(MakeRobotCalibrationPin.P9, 120)
     }
@@ -139,8 +141,9 @@ namespace MakeRobot {
      */
     //% block="robot line follow until %until"
     //% until.defl=MakeRobotLineFollowUntil.Cross
-    //% group="Tracer Junior"
+    //% group="Movement"
     //% weight=90
+    //% subcategory="Tracer Junior"
     export function robotLineFollowUntil(until: MakeRobotLineFollowUntil): void {
         setPidTuning(500, 0.6, 0.4, 0)
 
@@ -154,11 +157,12 @@ namespace MakeRobot {
     /**
      * Go left or right from the current line position.
      */
-    //% block="robot go %move"
+    //% block="robot turn %move"
     //% move.defl=MakeRobotMove.Left
-    //% group="Tracer Junior"
+    //% group="Movement"
     //% weight=80
-    export function robotGo(move: MakeRobotMove): void {
+    //% subcategory="Tracer Junior"
+    export function robotTurn(move: MakeRobotMove): void {
         if (move == MakeRobotMove.Right) {
             turnToLineWithPin(MakeRobotTurnDirection.Right, 150, AnalogReadWritePin.P0)
         } else if (move == MakeRobotMove.Left) {
@@ -172,8 +176,9 @@ namespace MakeRobot {
     //% block="robot calibration pin %pin speed %speed"
     //% pin.defl=MakeRobotCalibrationPin.P9
     //% speed.min=0 speed.max=255 speed.defl=120
-    //% group="Tracer Senior"
+    //% group="Setup"
     //% weight=100
+    //% subcategory="Tracer Senior"
     export function robotCalibration(pin: MakeRobotCalibrationPin, speed: number): void {
         const motorSpeed = limit(speed, 0, 255)
         const calibrationPin = calibrationPinValue(pin)
@@ -198,8 +203,9 @@ namespace MakeRobot {
     //% block="set motor left %left right %right"
     //% left.defl=MotionBitMotorChannel.M1
     //% right.defl=MotionBitMotorChannel.M3
-    //% group="Tracer Senior"
+    //% group="Setup"
     //% weight=90
+    //% subcategory="Tracer Senior"
     export function setMotor(left: MotionBitMotorChannel, right: MotionBitMotorChannel): void {
         leftMotorChannel = left
         rightMotorChannel = right
@@ -213,8 +219,9 @@ namespace MakeRobot {
     //% rightSpeed.min=-255 rightSpeed.max=255 rightSpeed.defl=0
     //% delay.min=0 delay.defl=0
     //% inlineInputMode=inline
-    //% group="Tracer Senior"
+    //% group="Movement"
     //% weight=80
+    //% subcategory="Tracer Senior"
     export function setMotorsSpeed(leftSpeed: number, rightSpeed: number, delay: number): void {
         runMotorSigned(leftMotorChannel, leftSpeed)
         runMotorSigned(rightMotorChannel, rightSpeed)
@@ -235,8 +242,9 @@ namespace MakeRobot {
     //% d4.defl=MakeRobotMakerLinePin.P13
     //% d5.defl=MakeRobotMakerLinePin.P12
     //% inlineInputMode=inline
-    //% group="Tracer Senior"
+    //% group="Sensors"
     //% weight=75
+    //% subcategory="Tracer Senior"
     export function setMakerLine(d1: MakeRobotMakerLinePin, d2: MakeRobotMakerLinePin, d3: MakeRobotMakerLinePin, d4: MakeRobotMakerLinePin, d5: MakeRobotMakerLinePin): void {
         makerLineD1 = makerLinePinValue(d1)
         makerLineD2 = makerLinePinValue(d2)
@@ -255,8 +263,9 @@ namespace MakeRobot {
     //% s4.defl=MakeRobotLineSignal.Off
     //% s5.defl=MakeRobotLineSignal.Off
     //% inlineInputMode=inline
-    //% group="Tracer Senior"
+    //% group="Sensors"
     //% weight=70
+    //% subcategory="Tracer Senior"
     export function lineDetectedOn(s1: MakeRobotLineSignal, s2: MakeRobotLineSignal, s3: MakeRobotLineSignal, s4: MakeRobotLineSignal, s5: MakeRobotLineSignal): boolean {
         return makerLineSignalMatches(makerLineD1, s1)
             && makerLineSignalMatches(makerLineD2, s2)
@@ -272,8 +281,9 @@ namespace MakeRobot {
     //% trig.defl=MakeRobotUltrasonicPin.P1
     //% echo.defl=MakeRobotUltrasonicPin.P2
     //% inlineInputMode=inline
-    //% group="Tracer Senior"
+    //% group="Sensors"
     //% weight=65
+    //% subcategory="Tracer Senior"
     export function setUltrasonic(trig: MakeRobotUltrasonicPin, echo: MakeRobotUltrasonicPin): void {
         ultrasonicTrigPin = ultrasonicPinValue(trig)
         ultrasonicEchoPin = ultrasonicPinValue(echo)
@@ -283,8 +293,9 @@ namespace MakeRobot {
      * Return distance measured by ultrasonic sensor in centimeters.
      */
     //% block="ultrasonic distance (cm)"
-    //% group="Tracer Senior"
+    //% group="Sensors"
     //% weight=60
+    //% subcategory="Tracer Senior"
     export function readUltrasonic(): number {
         ultrasonicEnabled = true
         readUltrasonicNow()
@@ -300,9 +311,9 @@ namespace MakeRobot {
     //% kd.defl=0.4
     //% ki.defl=0
     //% inlineInputMode=inline
-    //% group="Tracer Expert"
+    //% group="Setup"
     //% weight=100
-    //% blockHidden=true
+    //% subcategory="Tracer Expert"
     export function setPidTuning(setpoint: number, kp: number, kd: number, ki: number): void {
         pidSetpoint = limit(setpoint, 0, 1023)
         pidKp = kp
@@ -321,9 +332,9 @@ namespace MakeRobot {
     //% cross.defl=true
     //% stopTimer.min=0 stopTimer.defl=0
     //% inlineInputMode=inline
-    //% group="Tracer Expert"
+    //% group="Movement"
     //% weight=90
-    //% blockHidden=true
+    //% subcategory="Tracer Expert"
     export function robotLineFollow(pin: MakeRobotLinePin, speed: number, cross: boolean, stopTimer: number): void {
         lineFollowWithPin(linePinValue(pin), speed, cross, stopTimer)
     }
@@ -336,9 +347,9 @@ namespace MakeRobot {
     //% speed.min=0 speed.max=255 speed.defl=150
     //% pin.defl=MakeRobotLinePin.P0
     //% inlineInputMode=inline
-    //% group="Tracer Expert"
+    //% group="Movement"
     //% weight=80
-    //% blockHidden=true
+    //% subcategory="Tracer Expert"
     export function robotTurnToLine(direction: MakeRobotTurnDirection, speed: number, pin: MakeRobotLinePin): void {
         turnToLineWithPin(direction, speed, linePinValue(pin))
     }
@@ -347,9 +358,9 @@ namespace MakeRobot {
      * Stop the robot.
      */
     //% block="robot stop"
-    //% group="Tracer Expert"
+    //% group="Movement"
     //% weight=70
-    //% blockHidden=true
+    //% subcategory="Tracer Expert"
     export function robotStop(): void {
         motionbit.brakeMotor(leftMotorChannel)
         motionbit.brakeMotor(rightMotorChannel)
