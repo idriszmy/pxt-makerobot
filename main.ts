@@ -177,7 +177,7 @@ namespace MakeRobot {
     //% pin.defl=MakeRobotCalibrationPin.P9
     //% speed.min=0 speed.max=255 speed.defl=120
     //% group="Setup"
-    //% weight=100
+    //% weight=70
     //% subcategory="Tracer Senior"
     export function robotCalibration(pin: MakeRobotCalibrationPin, speed: number): void {
         const motorSpeed = limit(speed, 0, 255)
@@ -204,7 +204,7 @@ namespace MakeRobot {
     //% left.defl=MotionBitMotorChannel.M1
     //% right.defl=MotionBitMotorChannel.M3
     //% group="Setup"
-    //% weight=90
+    //% weight=100
     //% subcategory="Tracer Senior"
     export function setMotor(left: MotionBitMotorChannel, right: MotionBitMotorChannel): void {
         leftMotorChannel = left
@@ -243,7 +243,7 @@ namespace MakeRobot {
     //% d5.defl=MakeRobotMakerLinePin.P12
     //% inlineInputMode=inline
     //% group="Setup"
-    //% weight=75
+    //% weight=90
     //% subcategory="Tracer Senior"
     export function setMakerLine(d1: MakeRobotMakerLinePin, d2: MakeRobotMakerLinePin, d3: MakeRobotMakerLinePin, d4: MakeRobotMakerLinePin, d5: MakeRobotMakerLinePin): void {
         makerLineD1 = makerLinePinValue(d1)
@@ -282,7 +282,7 @@ namespace MakeRobot {
     //% echo.defl=MakeRobotUltrasonicPin.P2
     //% inlineInputMode=inline
     //% group="Setup"
-    //% weight=65
+    //% weight=80
     //% subcategory="Tracer Senior"
     export function setUltrasonic(trig: MakeRobotUltrasonicPin, echo: MakeRobotUltrasonicPin): void {
         ultrasonicTrigPin = ultrasonicPinValue(trig)
