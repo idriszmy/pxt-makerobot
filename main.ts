@@ -314,6 +314,7 @@ namespace MakeRobot {
     //% group="Setup"
     //% weight=100
     //% subcategory="Tracer Expert"
+    //% blockHidden=true
     export function setPidTuning(setpoint: number, kp: number, kd: number, ki: number): void {
         pidSetpoint = limit(setpoint, 0, 1023)
         pidKp = kp
@@ -335,6 +336,7 @@ namespace MakeRobot {
     //% group="Movement"
     //% weight=90
     //% subcategory="Tracer Expert"
+    //% blockHidden=true
     export function robotLineFollow(pin: MakeRobotLinePin, speed: number, cross: boolean, stopTimer: number): void {
         lineFollowWithPin(linePinValue(pin), speed, cross, stopTimer)
     }
@@ -350,6 +352,7 @@ namespace MakeRobot {
     //% group="Movement"
     //% weight=80
     //% subcategory="Tracer Expert"
+    //% blockHidden=true
     export function robotTurnToLine(direction: MakeRobotTurnDirection, speed: number, pin: MakeRobotLinePin): void {
         turnToLineWithPin(direction, speed, linePinValue(pin))
     }
@@ -361,6 +364,7 @@ namespace MakeRobot {
     //% group="Movement"
     //% weight=70
     //% subcategory="Tracer Expert"
+    //% blockHidden=true
     export function robotStop(): void {
         motionbit.brakeMotor(leftMotorChannel)
         motionbit.brakeMotor(rightMotorChannel)
