@@ -242,7 +242,7 @@ namespace MakeRobot {
     //% d4.defl=MakeRobotMakerLinePin.P13
     //% d5.defl=MakeRobotMakerLinePin.P12
     //% inlineInputMode=inline
-    //% group="Sensors"
+    //% group="Setup"
     //% weight=75
     //% subcategory="Tracer Senior"
     export function setMakerLine(d1: MakeRobotMakerLinePin, d2: MakeRobotMakerLinePin, d3: MakeRobotMakerLinePin, d4: MakeRobotMakerLinePin, d5: MakeRobotMakerLinePin): void {
@@ -281,7 +281,7 @@ namespace MakeRobot {
     //% trig.defl=MakeRobotUltrasonicPin.P1
     //% echo.defl=MakeRobotUltrasonicPin.P2
     //% inlineInputMode=inline
-    //% group="Sensors"
+    //% group="Setup"
     //% weight=65
     //% subcategory="Tracer Senior"
     export function setUltrasonic(trig: MakeRobotUltrasonicPin, echo: MakeRobotUltrasonicPin): void {
